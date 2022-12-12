@@ -1,0 +1,47 @@
+#! /bin/bash
+
+name="syncdropbox"
+dropbox="$HOME/Dropbox"
+sourcedir=""
+targetdir="sync" # Carpeta de destino en Dropbox para archivos individuales
+
+# Comprobar los argumentos iniciales
+
+if [ $# -eq 0 ] ;  entonces
+  echo "Uso: $0 [-d source-folder] {file, file, file}" >&2 ;  Salida 1
+Fi 
+
+si [ "$1" = "-d" ] ;  entonces
+ sourcedir="$2"
+  turno;  turno
+Fi
+
+
+si [ !  -z "$sourcedir" -a $# -ne 0 ] ;  entonces
+   echo "$name: No puede especificar tanto un directorio como archivos específicos."  >&2 ;  Salida 1
+Fi
+
+si [ !  -z "$sourcedir" ] ;  entonces
+  si [ !  -d "$sourcedir" ] ;  entonces
+    echo "$name: especifique un directorio de origen con -d" >&2 ;  Salida 1
+  Fi
+Fi
+
+si [ !  -z "$sourcedir" ] ;  entonces
+ if [ -f "$dropbox/$sourcedir" -o -d "$dropbox/$sourcedir" ] ;  entonces
+    echo "$name: directorio de origen especificado $sourcedir ya existe en $dropbox" >&2 ;  Salida 1
+  Fi
+
+  echo "Copiar contenidos de $sourcedir a $dropbox... "
+ cp -a "$sourcedir" $dropbox # -a hace una copia recursiva, preservando la información del propietario &c
+más
+  # No hay directorio de origen, por lo que nos han dado archivos individuales
+  si [ !  -d "$dropbox/$targetdir"] ;  entonces
+    mkdir "$dropbox/$targetdir"
+    si [ $?  -ne 0 ] ;  entonces
+      echo "$name: Error encontrado durante mkdir $dropbox/$targetdir" >&2 ;  Salida 1
+    Fi
+  Fi
+
+ cp -p -v $@ "$dropbox/$targetdir"
+Fi
