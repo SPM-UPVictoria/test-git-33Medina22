@@ -1,0 +1,36 @@
+#! /bin/bash
+
+tempfile="/tmp/geoloc. $$"
+
+Trampa "'which rm' -f $tempfile" 0 1 15
+
+if [ $# -eq 0 ] ;  entonces
+  echo "Uso: $(nombre base $0) imagen" >&2 ;  Salida 1
+Fi
+
+para nombre de archivo
+hacer
+ identificar -format "%[EXIF:*]" "$filename" | grep GPSL > $tempfile
+
+ latdeg=$(cabeza -1 $tempfile corte | -d, -f1 | corte -d= -f2)
+  latdeg=$(scriptbc -p 0 $latdeg)
+ latmin=$(cabeza -1 $tempfile corte | -d, -f2)
+  latmin=$(scriptbc -p 0 $latmin)
+ latsec=$(cabeza -1 $tempfile corte | -d, -f3)
+  latsec=$(scriptbc $latsec)
+ latorientation=$(sed -n '2p' $tempfile | cut -d= -f2)
+
+ longdeg=$(sed -n '3p' $tempfile | cut -d, -f1 | cut -d= -f2)
+  longdeg=$(scriptbc -p 0 $longdeg)
+ longmin=$(sed -n '3p' $tempfile | cut -d, -f2)
+  longmin=$(scriptbc -p 0 $longmin)
+ longsec=$(sed -n '3p' $tempfile | cut -d, -f3)
+  longsec=$(scriptbc $longsec)
+ longorientation=$(sed -n '4p' $tempfile | cut -d= -f2)
+
+ /bin/echo -n "Coords: $latdeg ${latmin}' ${latsec}\" $latorientation, "
+  echo "$longdeg ${longmin}' ${longsec}\" $longorientation"
+
+hecho
+
+Salida 0
