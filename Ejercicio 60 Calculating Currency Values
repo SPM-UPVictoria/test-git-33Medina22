@@ -1,0 +1,41 @@
+#! /bin/bash
+
+if [ $# -eq 0 ];  entonces
+  echo "Uso: $(nombre base $0) cantidad moneda a moneda"
+  echo "Las monedas más comunes son CAD, CNY, EUR, USD, INR, JPY y MXN"
+  echo "Use \"$(basename $0) list\" para la lista completa de monedas admitidas"
+Fi
+
+if [ $(uname) = "Darwin" ];  entonces
+  LANG=C 
+Fi
+
+url="https://www.google.com/finance/converter"
+tempfile="/tmp/converter. $$"
+lynx=$(que lynx)
+
+currencies=$($lynx -source "$url" | grep "option value=" | \
+ cut -d\" -f2- | sed 's/">/ /' | cut -d\( -f1 | sort   | uniq) 
+
+if [ $# -ne 4 ] ;  entonces
+  if [ "$1" = "list" ] ;  entonces
+    echo "Lista de monedas admitidas:"
+    eco "$currencies"
+  Fi
+  Salida 0
+Fi
+
+si [ $3 != "a" ] ;  entonces
+  echo "Uso: $(nombre base $0) moneda de valor TO moneda"
+  echo "(use \"$(basename $0) list\" para obtener una lista de todos los valores de moneda)"
+  Salida 0
+Fi
+
+Cantidad=$1
+basecurrency="$(echo $2 | tr '[:lower:]' '[:upper:]')"
+targetcurrency="$(echo $4 | tr '[:lower:]' '[:upper:]')"
+
+$lynx -source "$url?a=$amount&from=$basecurrency&to=$targetcurrency" | \
+ grep 'id=currency_converter_result' | sed 's/<[^>]*>//g'
+
+Salida 0
