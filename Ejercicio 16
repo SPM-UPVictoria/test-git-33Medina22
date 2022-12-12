@@ -1,10 +1,5 @@
 #!/bin/bash
 
-# unrm--Searches the deleted files archive for the specified file or
-#   directory. If there is more than one matching result, it shows a list 
-#   of results ordered by timestamp and lets the user specify 
-#   which one to restore.
-
 archivedir="$HOME/.deleted-files"
 realrm="$(which rm)"
 move="$(which mv)"
