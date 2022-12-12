@@ -1,0 +1,23 @@
+#! /bin/bash
+
+app="Dropbox.app"
+detallado=1
+
+running="$(ps aux | grep -i $app | grep -v grep)"
+
+si [ "$1" = "-s" ] ;  Entonces # -s es para modo silencioso
+ detallado=0
+Fi
+
+si [ !  -z "$running" ] ;  entonces
+  si [ $verbose -eq 1 ] ;  entonces
+    echo "$app se está ejecutando con PID $(echo $running | cortar -d\  -f2)"
+  Fi
+más
+  si [ $verbose -eq 1 ] ;  entonces
+    echo "Lanzamiento $app"
+  Fi
+ abierto -a $app
+Fi
+
+Salida 0
