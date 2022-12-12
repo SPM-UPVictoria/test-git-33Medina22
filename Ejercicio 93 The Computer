@@ -1,0 +1,64 @@
+#! /bin/bash
+
+dosay="'que dicen' --quality=127"
+format="'which fmt' -w 70"
+
+voice="" # voz predeterminada del sistema
+rate="" # predeterminado a la velocidad de habla estándar
+
+Demóvoces()
+{
+   # Ofrecer una muestra de cada voz disponible
+
+ voicelist=$( say -v \?  | grep "en_" | corte -c1-12 |  
+ sed 's/ /_/;s/ //g;s/_$//')
+
+   if [ "$1" = "list" ] ;  entonces
+     eco Voces disponibles: $(echo $voicelist | sed 's/ /, /g;s/_/ /g') |   $format
+     echo "HANDY TIP: use \"$(basename $0) demo\" para escuchar todas las voces"
+     Salida 0
+   Fi
+
+   para el nombre en $voicelist ;  hacer
+ myname=$(echo $name | sed 's/_/ /')
+     eco "Voz: $myname"
+     $dosay -v "$myname" "¡Hola! Estoy $myname. Así es como sueno. "
+   hecho
+
+   Salida 0
+}
+
+uso()
+{
+   echo "Uso: sayit [-v voz] [-r rate] [-f file] frase"
+   echo " o: sayit demo"
+   Salida 0
+}
+
+mientras que getopts "df:r:v:" opta;  hacer
+  Caso $opt en
+ d) lista de demovoices ;;
+ f ) input="$OPTARG"    ;;
+ r ) rate="-r $OPTARG" ;;
+ v ) voice="$OPTARG"    ;;
+  Esac
+hecho
+
+Mayús $(($OPTIND - 1))
+
+if [ $# -eq 0 -a -z "$input" ] ;  entonces
+  $dosay "¡Amigo! No me has dado ningún parámetro con el que trabajar. "
+  echo "Error: no se especifican parámetros. Especifique un archivo o frase"
+  Salida 0
+Fi
+
+if [ "$1" = "demo" ] ;  entonces
+ Demóvoces
+Fi
+
+si [ !  -z "$input" ] ;  entonces
+  $dosay $rate -v "$voice" -f $input
+más
+  $dosay $rate -v "$voice" "$*"
+Fi
+Salida 0
