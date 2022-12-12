@@ -1,0 +1,46 @@
+#! /bin/bash
+
+db="/usr/lib/games/state.capitals.txt"    
+
+si [ !  -r "$db" ] ;  entonces
+  echo "$0: No se puede abrir $db para leer".  >&2
+  echo "(Get http://www.intuitive.com/wicked/examples/state.capitals.txt" >&2
+  Echo "¡Guarda el archivo como $db y estás listo para jugar!) "  >&2
+  Salida 1
+Fi
+
+conjeturas=0; correcto=0; total=0
+
+while [ "$guess" != "quit" ] ;  hacer
+  
+  thiskey="$(randomquote $db)"
+ state="$(echo $thiskey | cut -d\  -f1 | sed 's/-/ /g')"
+ city="$(echo $thiskey | cut -d\  -f2 | sed 's/-/ /g')"
+ match="$(echo $city | tr '[:upper:]' '[:lower:]')"
+
+ adivinar="?? "  ; total=$(( $total + 1 )) ;
+
+  eco ""
+  echo "¿Qué ciudad es la capital de $state?"
+  while [ "$guess" != "$match" -a "$guess" != "next" -a "  $guess"  !=     "quit" ]
+  hacer
+ /bin/echo -n "Respuesta: "
+    Leer adivinar
+
+    if [ "$guess" = "$match" -o "$guess" = "$city" ] ;  entonces
+      eco ""
+      echo "*** ¡Absolutamente correcto! ¡Bien hecho! "
+ correcto=$(( $correct + 1 ))
+ adivinar = $match
+    elif [ "$guess" = "siguiente" -o "$guess" = "renunciar  " ] ;  entonces
+      eco ""
+      Echo "$city es la capital de $state". 
+    más
+      echo "Me temo que eso no es correcto".
+    Fi 
+  hecho
+
+hecho
+
+ echo "Tienes $correct de $total presentado".
+Salida 0
