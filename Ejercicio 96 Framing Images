@@ -1,0 +1,68 @@
+#! /bin/bash
+
+uso()
+{
+gato << EOF
+Uso: $(nombre base $0) -b borde -c color imagename
+ o $(nombre base $0) -f frame -m color imagename
+En el primer caso, especifique los parámetros del borde como tamaño x tamaño o porcentaje x porcentaje
+seguido del color deseado para el borde (RGB o nombre de color).
+En el segundo caso, especifique el tamaño del fotograma y el desplazamiento, seguido del comando
+Color mate.
+EJEMPLO DE USO:
+  $(nombre base $0) -b 15x15 -c negro imagename
+  $(nombre base $0) -b 10%x10% -c gris imagename
+  $(nombre base $0) -f 10x10+10+0 imagename
+  $(nombre base $0) -f 6x6+2+2 -m tomate imagename
+EF
+Salida 1
+}
+
+#### BLOQUE DE CÓDIGO PRINCIPAL
+
+# ¡La mayor parte de esto es analizar los argumentos iniciales!
+
+mientras que getopts "b:c:f:m:" opta;  hacer
+  Caso $opt en
+ b ) border="$OPTARG";                ;;
+ c ) bordercolor="$OPTARG";           ;;
+ f ) frame="$OPTARG";                 ;;
+ m ) mattecolor="$OPTARG";            ;;
+   ? ) Uso;                           ;;
+  Esac
+hecho
+shift $(($OPTIND - 1)) # Comer todos los argumentos analizados
+
+if [ $# -eq 0 ] ;  entonces # ¿No hay imágenes especificadas?
+ uso
+Fi
+
+# ¿Especificamos un borde y un marco?
+
+si [ !  -z "$bordercolor" -a !  -z "$mattecolor" ] ;  entonces
+  echo "$(basename $0): No puede especificar un color y un color mate simultáneamente."  >&2
+  Salida 1
+Fi
+
+si [ !  -z "$frame" -a !  -z "$border" ] ;  entonces
+  echo "$(basename $0): No se puede especificar un borde y un marco simultáneamente."  >&2
+  Salida 1
+Fi
+
+si [ !  -z "$border" ] ;  entonces
+  args="-bordercolor $bordercolor -border $border"
+más
+  args="-mattecolor $mattecolor -frame $frame"
+Fi
+
+
+para el nombre
+hacer
+ suffix="$(echo $name | rev  | corte -d. -f1 | rev)"
+ prefix="$(echo $name | rev  | corte -d. -f2- | rev)"
+  newname="$prefix+f.$suffix"
+  echo "Agregar un marco a la imagen $name, guardar como $newname"
+ Convertir $name $args $newname
+hecho
+
+Salida 0
