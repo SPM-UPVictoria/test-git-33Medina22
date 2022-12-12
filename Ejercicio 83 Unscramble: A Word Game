@@ -1,0 +1,67 @@
+#! /bin/bash
+
+wordlib="/home/haydo/Escritorio/usa.txt"
+
+Palabra revuelta()
+{
+  match="$(randomquote $wordlib)"
+
+  echo "¡Escogí una palabra!"
+
+ len=$(echo $match | wc -c | sed 's/[^[:d igit:]]//g')
+ scrambled=""; lastval=1
+
+  para (( val=1; $val < $len ; )) 
+  hacer
+    si [ $(($RANDOM % 2)) -eq 1 ] ;  entonces
+ scrambled=$scrambled$(echo $match | cut -c$val)
+    más
+ scrambled=$(echo $match | cut -c$val)$scrambled
+    Fi
+ val=$(( $val + 1 ))
+  hecho
+}
+
+si [ !  -r $wordlib ] ;  entonces
+  echo "$0: falta la biblioteca de palabras $wordlib" >&2
+  echo "(online: http://www.intuitive.com/wicked/examples/long-words.txt" >&2
+  Echo "¡Guarda el archivo como $wordlib y estás listo para jugar!) "  >&2
+  Salida 1
+Fi
+
+newgame=""; conjeturas=0; correcto=0; total=0 
+
+hasta que [ "$guess" = "renunciar" ] ;  hacer
+
+ Palabra revuelta
+
+  eco ""
+  echo "You need to unscramble: $scrambled"
+
+ adivinar="?? "  ; conjeturas=0
+ total=$(( $total + 1 ))
+
+  while [ "$guess" != "$match" -a "$guess" != "quit" -a "  $guess"  != "next" ] 
+  hacer
+    eco ""
+ /bin/echo -n "Tu suposición (quit|next) : "
+    Leer adivinar
+ 
+    si [ "$guess" = "$match" ] ;  entonces
+ conjeturas=$(( $guesses + 1 ))
+      eco ""
+      echo "*** ¡Lo tienes con intentos = ${conjeturas}! ¡¡Bien hecho!! "  
+      eco ""
+ correcto=$(( $correct + 1 ))
+    elif [ "$guess" = "siguiente" -o "$guess" = "renunciar  " ] ;  entonces
+      echo "La palabra no codificada era \"$match\". Tus intentos: $guesses"
+    más
+      eco "No. Esa no es la palabra no codificada. Vuelve a intentarlo. "
+ conjeturas=$(( $guesses + 1 ))
+    Fi
+  hecho
+hecho
+
+echo "Hecho. Descubriste correctamente $correct de $total palabras revueltas. "
+
+Salida 0
