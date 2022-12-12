@@ -1,0 +1,34 @@
+#! /bin/bash
+
+if [ $# -ne 3 ] ;  entonces
+  echo "Uso: $(basename $0) mon day year" >&2
+  echo " con solo valores numéricos (ej: 7 7 1776)" >&2
+  Salida 1
+Fi
+
+date --version  > /dev/null 2>&1 # error de descarte, si lo hay
+baddate="$? "  # Solo mira el código de retorno
+
+si [ !  $baddate ] ;  entonces
+ fecha -d $1/$2/$3 +"Eso fue un %A."
+más
+
+  si [ $2 -lt 10 ] ;  entonces
+ patrón=" $2[^0-9]"
+  más
+ pattern="$2[^0-9]"
+  Fi
+
+ dayofweek="$(ncal $1 $3 | grep "$pattern" | corte -c1-2)"
+
+  caso $dayofweek en 
+ Su ) eco "Eso fue un domingo"; 	;;
+ Mo ) echo "Eso fue un lunes"; 	;;
+ Tu ) echo "Eso fue un martes"; 	;;
+ Nosotros) hacemos eco "Eso fue un miércoles"; 	;;
+ Th) eco "Eso fue un jueves"; 	;;
+ Fr ) eco "Eso fue un viernes"; 	;;
+ Sa ) echo "Eso fue un sábado"; 	;;
+  Esac
+Fi
+Salida 0
