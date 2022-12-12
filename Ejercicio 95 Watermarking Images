@@ -1,0 +1,36 @@
+#! /bin/bash
+
+wmfile="/tmp/marca de agua. $$.png"
+fontsize="44" # debería ser un arg inicial
+
+Trap "'which rm' -f $wmfile" 0 1 15 # No se deja ningún archivo temporal
+
+if [ $# -ne 2 ] ;  entonces
+  echo "Uso: $(nombre base $0) imagefile "watermark text"" >&2 ;  Salida 1
+Fi
+
+si [ !  -r "$1" ] ;  entonces
+  echo "$(basename $0): Can't read input image $1" >&2 ;  Salida 1
+Fi
+
+# Para empezar, obtén las dimensiones de la imagen
+
+dimensions="$(identify -format "%G" "$1")"
+
+# Ahora vamos a crear la superposición temporal de marca de agua
+
+convert -size $dimensions xc:none -pointsize $fontsize -gravity south \
+ -draw "Rellenar texto negro 1,1 '$2' texto 0,0 '$2' rellenar texto blanco 2,2 '$2'" \
+  $wmfile
+
+# echo "creado archivo de marca de agua con dimensiones $dimensions"
+
+suffix="$(echo $1 | rev  | corte -d. -f1 | rev)"
+prefix="$(echo $1 | rev  | corte -d. -f2- | rev)"
+
+newfilename="$prefix+wm.$suffix"
+compuesto -disolver 75% -gravedad sur $wmfile "$1" "$newfilename"
+
+echo "Creado nuevo archivo de imagen con marca de agua $newfilename"
+
+Salida 0
