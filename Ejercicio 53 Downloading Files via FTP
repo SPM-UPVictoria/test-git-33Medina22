@@ -1,0 +1,32 @@
+#! /bin/bash
+
+anonpass="$LOGNAME@$(hostname)"
+
+if [ $# -ne 1 ] ;  entonces
+  echo "Uso: $0 ftp://... "  >&2
+  Salida 1
+Fi
+
+if [ "$(echo $1 | corte -c1-6)" != "ftp://" ] ;  entonces
+  echo "$0: URL mal formada. Lo necesito para empezar con ftp://" >&2; 
+  Salida 1
+Fi
+
+server="$(echo $1 | corte -d/ -f3)"
+filename="$(echo $1 | corte -d/ -f4-)"
+basefile="$(basename $filename)"
+
+echo ${0}: Descarga de $basefile desde el servidor $server
+
+ftp -np << EOF
+Abrir $server
+$anonpass FTP de usuario
+obtener "$filename" "$basefile"
+renunciar
+EF
+
+si [ $?  -eq 0 ] ;  entonces
+  ls -l $basefile
+Fi
+
+Salida 0
