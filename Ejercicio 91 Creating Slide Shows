@@ -1,0 +1,34 @@
+#! /bin/bash
+
+delay=2 # retraso predeterminado en segundos
+psize="1200x900>" # tamaño de imagen preferido para la visualización
+
+if [ $# -eq 0 ] ;  entonces
+  echo "Usage: $(basename $0) watch-directory" >&2 ;  Salida 1
+Fi
+
+watch="$1"
+
+si [ !  -d "$watch" ] ;  entonces
+  echo "$(basename $0): directorio de inspección especificado $watch no es un directorio" >&2 ;  Salida 1
+Fi
+
+CD "$watch"
+
+si [ $?  -ne 0 ] ;  entonces
+  echo "$(basename $0): failed trying to cd into $watch" >&2 ;  Salida 1
+Fi
+
+suffixes="$(file * | Imagen grep | corte -d: -f1 | rev | corte -d. -f1 | \
+ rev | sort |  uniq | sed 's/^/\*./') "
+
+if [ -z "$suffixes" ] ;  entonces
+  echo "$(basename $0): no hay imágenes para mostrar en la carpeta $watch" >&2 ;  Salida 1
+Fi
+
+/bin/echo -n "Mostrando $(ls $suffixes | wc -l) imágenes de $watch "
+conjunto -f ;  eco con sufijos $suffixes ;  Establecer +F
+
+display -loop 0 -delay $delay -resize $psize -backdrop $suffixes
+
+Salida 0
