@@ -1,0 +1,4 @@
+echón()
+{
+  echo "$*" | awk '{ printf "%s", $0 }'
+}
