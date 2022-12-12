@@ -1,0 +1,45 @@
+#! /bin/bash 
+
+. validint_scrip_5.sh   
+Flotador válido()
+{
+ fvalue="$1"
+  si [ !  -z $(echo $fvalue | sed 's/[^.] g') ] ;  entonces
+ decimalPart="$(echo $fvalue | corte -d. -f1)"
+
+ fractionalPart="${fvalue#*\.} "
+
+    
+    si [ !  -z $decimalPart ] ;  entonces
+      
+      if ! validint "$decimalPart" "" "" ;  entonces
+        Devolución 1
+      Fi 
+    Fi
+
+    if [ "${fractionalPart%${fractionalPart#?}} "  = "-" ] ;  entonces
+      echo "Número de punto flotante no válido: '-' no permitido \
+ después del punto decimal" >&2         
+      Devolución 1
+    Fi 
+    if [ "$fractionalPart" != "" ] ;  entonces 
+     
+      if ! validint "$fractionalPart" "0"   "" ;  entonces
+        Devolución 1
+      Fi
+    Fi
+  más 
+    si [ "$fvalue" = "-" ] ;  entonces
+      echo "Formato de coma flotante no válido."  >&2 ;  Devolución 1
+    Fi
+    
+    if ! validint "$fvalue" "" "" ;  entonces
+      Devolución 1
+    Fi
+  Fi
+
+  volver 0
+}
+si es válidoflotante $1 ;  entonces
+  echo "$1 es un valor de punto flotante válido"
+Fi
